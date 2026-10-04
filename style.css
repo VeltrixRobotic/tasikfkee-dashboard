@@ -312,3 +312,17 @@ footer{
     display:none;
   }
 }
+
+/* Tasik FKEE icon — used in header and browser tab */
+.brand-mark{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.brand-mark img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
