@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#06111f">
+  <meta name="description" content="Tasik FKEE UTHM IoT environmental monitoring dashboard">
+  <title>Tasik FKEE | UTHM IoT</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Tasik FKEE home">
+      <span class="brand-mark">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 4C11.8 10.1 8 14.7 8 19.2A8 8 0 0 0 24 19.2C24 14.7 20.2 10.1 16 4Z"></path>
+          <path d="M11.5 20.2c1 2.2 2.6 3.3 4.9 3.5"></path>
+        </svg>
+      </span>
+      <span>
+        <strong>TASIK FKEE</strong>
+        <small>UTHM IoT Monitoring</small>
+      </span>
+    </a>
+
+    <div class="top-status">
+      <span class="status-dot"></span>
+      <div>
+        <span class="status-label">SYSTEM STATUS</span>
+        <b id="statusText">CONNECTING</b>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> LIVE MONITORING STATION</div>
+        <h1>Tasik FKEE</h1>
+        <p>Real-time environmental and solar conditions from the lake monitoring station.</p>
+      </div>
+
+      <div class="live-meta">
+        <div class="live-badge"><i></i> LIVE DATA</div>
+        <div class="update-label">LAST UPDATE</div>
+        <strong id="updated">--</strong>
+      </div>
+    </section>
+
+    <section class="metric-grid" aria-label="Current sensor readings">
+      <article class="metric-card temperature">
+        <div class="metric-head">
+          <div class="metric-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0Z"></path><path d="M12 7v9"></path></svg>
+          </div>
+          <span>ENVIRONMENT</span>
+        </div>
+        <div class="metric-value"><strong id="temperature">--</strong><small>°C</small></div>
+        <div class="metric-caption">Air temperature</div>
+      </article>
+
+      <article class="metric-card humidity">
+        <div class="metric-head">
+          <div class="metric-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s6 6.4 6 11a6 6 0 0 1-12 0c0-4.6 6-11 6-11Z"></path><path d="M9 16.2c.7 1 1.7 1.5 3 1.5"></path></svg>
+          </div>
+          <span>ENVIRONMENT</span>
+        </div>
+        <div class="metric-value"><strong id="humidity">--</strong><small>%</small></div>
+        <div class="metric-caption">Relative humidity</div>
+      </article>
+
+      <article class="metric-card pressure">
+        <div class="metric-head">
+          <div class="metric-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15a8 8 0 1 1 16 0"></path><path d="m12 15 4-5"></path><path d="M6 19h12"></path></svg>
+          </div>
+          <span>ATMOSPHERE</span>
+        </div>
+        <div class="metric-value"><strong id="pressure">--</strong><small>hPa</small></div>
+        <div class="metric-caption">Barometric pressure</div>
+      </article>
+
+      <article class="metric-card water">
+        <div class="metric-head">
+          <div class="metric-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10c2.2 0 2.2-1.7 4.4-1.7S10.6 10 12.8 10s2.2-1.7 4.4-1.7S19.4 10 21 10"></path><path d="M4 15c2.2 0 2.2-1.7 4.4-1.7s2.2 1.7 4.4 1.7 2.2-1.7 4.4-1.7S19.4 15 21 15"></path></svg>
+          </div>
+          <span>WATER</span>
+        </div>
+        <div class="metric-value"><strong id="water">--</strong><small>cm</small></div>
+        <div class="metric-caption">Sensor distance</div>
+      </article>
+
+      <article class="metric-card solar">
+        <div class="metric-head">
+          <div class="metric-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v3M12 19v3M4.9 4.9 7 7M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"></path></svg>
+          </div>
+          <span>SOLAR</span>
+        </div>
+        <div class="metric-value"><strong id="voltage">--</strong><small>V</small></div>
+        <div class="metric-caption">Panel voltage</div>
+      </article>
+
+      <article class="metric-card solar">
+        <div class="metric-head">
+          <div class="metric-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 6 13h5l-1 9 7-12h-5l1-8Z"></path></svg>
+          </div>
+          <span>SOLAR</span>
+        </div>
+        <div class="metric-value"><strong id="current">--</strong><small>mA</small></div>
+        <div class="metric-caption">Panel current</div>
+      </article>
+
+      <article class="metric-card solar">
+        <div class="metric-head">
+          <div class="metric-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 5 13h6l-1 9 9-13h-6l0-7Z"></path></svg>
+          </div>
+          <span>SOLAR</span>
+        </div>
+        <div class="metric-value"><strong id="power">--</strong><small>mW</small></div>
+        <div class="metric-caption">Measured power</div>
+      </article>
+
+      <article class="metric-card water">
+        <div class="metric-head">
+          <div class="metric-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h4l2-7 3 14 2-7h3"></path></svg>
+          </div>
+          <span>WATER SENSOR</span>
+        </div>
+        <div class="metric-value"><strong id="pulse">--</strong><small>µs</small></div>
+        <div class="metric-caption">Pulse duration</div>
+      </article>
+    </section>
+
+    <section class="section-panel">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">ENVIRONMENT</div>
+          <h2>Environmental history</h2>
+          <p>Temperature, humidity and water sensor readings over time.</p>
+        </div>
+        <select id="range" aria-label="History range">
+          <option value="1">1 hour</option>
+          <option value="6">6 hours</option>
+          <option value="12">12 hours</option>
+          <option value="24" selected>24 hours</option>
+          <option value="72">3 days</option>
+        </select>
+      </div>
+      <div class="chart-wrap large"><canvas id="env"></canvas></div>
+    </section>
+
+    <section class="section-panel">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">ENERGY</div>
+          <h2>Solar performance</h2>
+          <p>Panel voltage and current collected by the station.</p>
+        </div>
+        <div class="chart-note"><span></span> Historical data</div>
+      </div>
+      <div class="chart-wrap"><canvas id="solar"></canvas></div>
+    </section>
+
+    <section class="partners-panel" aria-label="Project developers and organisations involved">
+      <div class="partner-row developers">
+        <div class="partner-title"><span>PROJECT DEVELOPERS</span></div>
+        <div class="partner-logos developer-logos">
+          <div class="partner-logo logo-3dlab"><img src="logo-3dlab.png" alt="3D Lab Research Solutions"></div>
+          <div class="partner-divider"></div>
+          <div class="partner-logo logo-veltrix"><img src="logo-veltrix.png" alt="Veltrix Robotic"></div>
+        </div>
+      </div>
+
+      <div class="partner-separator"></div>
+
+      <div class="partner-row organisations">
+        <div class="partner-title"><span>ORGANISATIONS INVOLVED</span></div>
+        <div class="partner-logos organisation-logos">
+          <div class="partner-logo logo-uthm"><img src="logo-uthm.png" alt="Universiti Tun Hussein Onn Malaysia"></div>
+          <div class="partner-divider"></div>
+          <div class="partner-logo logo-fkee"><img src="logo-fkee.png" alt="Fakulti Kejuruteraan Elektrik dan Elektronik"></div>
+          <div class="partner-divider"></div>
+          <div class="partner-logo logo-innocube"><img src="logo-innocube.png" alt="InnoCube"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-brand">TASIK FKEE</div>
+      <span>UTHM IoT Monitoring System</span>
+      <span class="footer-separator">•</span>
+      <span>VELTRIX ROBOTIC</span>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
