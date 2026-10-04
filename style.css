@@ -183,19 +183,20 @@ footer{
   border-radius:18px;
   box-shadow:0 18px 45px rgba(0,0,0,.16);
 }
+
 .partner-row{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:7px;
-  min-height:84px;
-}
-.partner-title{
-  width:auto;
-  flex:0 0 auto;
+  display:block;
+  width:100%;
   text-align:center;
 }
+
+.partner-title{
+  display:block;
+  width:100%;
+  margin:0 0 8px;
+  text-align:center;
+}
+
 .partner-title span{
   color:#6685a2;
   font-size:9px;
@@ -203,14 +204,20 @@ footer{
   letter-spacing:2px;
   line-height:1.55;
 }
+
 .partner-logos{
   display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
   align-items:center;
   justify-content:center;
   gap:22px;
+  width:100%;
   min-width:0;
 }
+
 .partner-logo{
+  flex:0 0 170px;
   width:170px;
   height:58px;
   display:flex;
@@ -219,7 +226,12 @@ footer{
   opacity:.62;
   transition:opacity .2s ease,transform .2s ease;
 }
-.partner-logo:hover{opacity:.88;transform:translateY(-1px)}
+
+.partner-logo:hover{
+  opacity:.88;
+  transform:translateY(-1px);
+}
+
 .partner-logo img{
   display:block;
   width:100%;
@@ -227,35 +239,76 @@ footer{
   object-fit:contain;
   object-position:center;
 }
+
 .logo-3dlab img{height:54px}
 .logo-veltrix img{height:50px}
 .logo-uthm img{height:56px}
 .logo-fkee img{height:52px}
 .logo-innocube img{height:48px}
+
 .partner-divider{
+  flex:0 0 1px;
   width:1px;
   height:32px;
   background:rgba(151,194,225,.13);
 }
+
 .partner-separator{
   width:62%;
   height:1px;
-  margin:6px auto;
+  margin:8px auto;
   background:linear-gradient(90deg,transparent,rgba(151,194,225,.13),transparent);
 }
-@media(max-width:600px){
-  .partners-panel{padding:18px 12px 20px}
-  .partner-logos{gap:10px}
-  .partner-logo{width:120px;height:50px}
-  .partner-divider{height:28px}
-  .logo-3dlab img{height:44px}
-  .logo-veltrix img{height:41px}
-  .logo-uthm img{height:46px}
-  .logo-fkee img{height:42px}
-  .logo-innocube img{height:39px}
+
+@media(max-width:900px){
+  .partner-logos{
+    gap:14px;
+  }
+
+  .partner-logo{
+    flex-basis:150px;
+    width:150px;
+  }
 }
-@media(max-width:430px){
-  .developer-logos,.organisation-logos{flex-wrap:wrap}
-  .partner-divider{display:none}
-  .partner-logo{width:130px}
+
+@media(max-width:700px){
+  .partner-logos{
+    gap:8px;
+  }
+
+  .partner-logo{
+    flex-basis:125px;
+    width:125px;
+    height:52px;
+  }
+
+  .partner-divider{
+    height:28px;
+  }
+
+  .logo-3dlab img{height:46px}
+  .logo-veltrix img{height:43px}
+  .logo-uthm img{height:48px}
+  .logo-fkee img{height:44px}
+  .logo-innocube img{height:41px}
+}
+
+@media(max-width:480px){
+  .partners-panel{
+    padding:18px 12px 20px;
+  }
+
+  .partner-logos{
+    flex-wrap:wrap;
+    row-gap:6px;
+  }
+
+  .partner-logo{
+    flex-basis:120px;
+    width:120px;
+  }
+
+  .partner-divider{
+    display:none;
+  }
 }
