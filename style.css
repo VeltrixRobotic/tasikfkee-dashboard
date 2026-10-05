@@ -1543,3 +1543,34 @@ html[data-theme="light"] .hero.hero-image .live-meta{
   margin-top:-44px !important;
   background-position:center top !important;
 }
+
+
+/* =========================================================
+   MOBILE — FULL-WIDTH TASIK KEMAJUAN PHOTO
+   Let the hero image reach the phone's left/right edges,
+   regardless of the dashboard content wrapper width.
+   ========================================================= */
+@media (max-width:760px){
+  .hero.hero-image{
+    width:100vw !important;
+    max-width:none !important;
+    margin-left:calc(50% - 50vw) !important;
+    margin-right:calc(50% - 50vw) !important;
+    border-left:0 !important;
+    border-right:0 !important;
+    border-radius:0 !important;
+    background-size:cover !important;
+    background-position:center top !important;
+    margin-bottom:30px !important;
+  }
+
+  .hero.hero-image .hero-copy{
+    width:100%;
+    max-width:none;
+  }
+
+  .hero.hero-image .live-meta{
+    width:100%;
+    box-sizing:border-box;
+  }
+}
