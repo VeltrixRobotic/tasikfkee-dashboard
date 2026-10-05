@@ -1,5 +1,5 @@
 const API="https://api.veltrixrobotic.com";
-let envChart,solarChart;
+let envChart,waterLevelChart,solarChart;
 
 const $=id=>document.getElementById(id);
 
@@ -12,6 +12,9 @@ const time=v=>{
     ?d.toLocaleString("en-MY",{dateStyle:"medium",timeStyle:"medium"})
     :"--";
 };
+
+const range=$("range");
+range.value="1";
 
 async function get(url){
   const r=await fetch(url,{cache:"no-store"});
@@ -49,6 +52,7 @@ async function latest(){
 }
 
 function chartOptions(){
+  const light=document.documentElement.getAttribute("data-theme")==="light";
   return{
     responsive:true,
     maintainAspectRatio:false,
@@ -59,7 +63,7 @@ function chartOptions(){
         position:"top",
         align:"start",
         labels:{
-          color:"#9fb1c5",
+          color:light?"#5f707b":"#9fb1c5",
           boxWidth:10,
           boxHeight:10,
           padding:18,
@@ -67,24 +71,24 @@ function chartOptions(){
         }
       },
       tooltip:{
-        backgroundColor:"rgba(5,17,30,.94)",
-        borderColor:"rgba(100,180,220,.16)",
+        backgroundColor:light?"rgba(255,255,255,.96)":"rgba(5,17,30,.94)",
+        borderColor:light?"rgba(35,55,70,.14)":"rgba(100,180,220,.16)",
         borderWidth:1,
-        titleColor:"#edf6ff",
-        bodyColor:"#b9cadb",
+        titleColor:light?"#17232d":"#edf6ff",
+        bodyColor:light?"#52636e":"#b9cadb",
         padding:10,
         displayColors:true
       }
     },
     scales:{
       x:{
-        ticks:{color:"#647e97",maxTicksLimit:10,font:{size:9}},
-        grid:{color:"rgba(255,255,255,.035)"},
+        ticks:{color:light?"#70818b":"#647e97",maxTicksLimit:10,font:{size:9}},
+        grid:{color:light?"rgba(35,55,70,.055)":"rgba(255,255,255,.035)"},
         border:{display:false}
       },
       y:{
-        ticks:{color:"#647e97",font:{size:9}},
-        grid:{color:"rgba(255,255,255,.045)"},
+        ticks:{color:light?"#70818b":"#647e97",font:{size:9}},
+        grid:{color:light?"rgba(35,55,70,.055)":"rgba(255,255,255,.045)"},
         border:{display:false}
       }
     }
@@ -107,7 +111,27 @@ async function history(){
         datasets:[
           {label:"Temperature °C",data:r.map(a=>a.temperature),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4},
           {label:"Humidity %",data:r.map(a=>a.humidity),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4},
-          {label:"Water distance cm",data:r.map(a=>a.water_distance_cm),tension:.16,borderWidth:2,pointRadius:0,pointHoverRadius:4}
+          {label:"Pressure hPa",data:r.map(a=>a.pressure),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4}
+        ]
+      },
+      options:chartOptions()
+    });
+
+    if(waterLevelChart)waterLevelChart.destroy();
+
+    waterLevelChart=new Chart($("waterLevel"),{
+      type:"line",
+      data:{
+        labels,
+        datasets:[
+          {
+            label:"Water level cm",
+            data:r.map(a=>a.water_distance_cm),
+            tension:.22,
+            borderWidth:2,
+            pointRadius:0,
+            pointHoverRadius:4
+          }
         ]
       },
       options:chartOptions()
@@ -121,7 +145,8 @@ async function history(){
         labels,
         datasets:[
           {label:"Voltage V",data:r.map(a=>a.solar_voltage),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4},
-          {label:"Current mA",data:r.map(a=>a.solar_current_ma),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4}
+          {label:"Current mA",data:r.map(a=>a.solar_current_ma),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4},
+          {label:"Power mW",data:r.map(a=>a.solar_power_mw),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4}
         ]
       },
       options:chartOptions()
@@ -138,3 +163,55 @@ history();
 
 setInterval(latest,5000);
 setInterval(history,60000);
+
+
+/* Refresh existing charts when the theme changes. */
+window.updateChartTheme=function(){
+  [envChart,waterLevelChart,solarChart].forEach(function(chart){
+    if(!chart) return;
+    chart.options=chartOptions();
+    chart.update("none");
+  });
+};
+
+/* =========================================================
+   Theme toggle
+   ========================================================= */
+(function initTheme(){
+  const root = document.documentElement;
+  const button = document.getElementById("themeToggle");
+  if (!button) return;
+
+  let saved = null;
+  try {
+    saved = localStorage.getItem("tasikfkee-theme");
+  } catch (e) {}
+
+  // Dark mode is the default for new visitors.
+  const initial = saved === "light" ? "light" : "dark";
+
+  function applyTheme(theme){
+    root.setAttribute("data-theme", theme);
+    const light = theme === "light";
+    button.setAttribute("aria-label", light ? "Switch to dark mode" : "Switch to light mode");
+    button.setAttribute("title", light ? "Switch to dark mode" : "Switch to light mode");
+    const icon = button.querySelector(".theme-icon");
+    const label = button.querySelector(".theme-toggle-label");
+    if (icon) icon.textContent = light ? "☾" : "☀";
+    if (label) label.textContent = light ? "Dark" : "Light";
+    try {
+      localStorage.setItem("tasikfkee-theme", theme);
+    } catch (e) {}
+
+    // Update Chart.js colors if the dashboard exposes the chart instances.
+    if (typeof window.updateChartTheme === "function") {
+      window.updateChartTheme();
+    }
+  }
+
+  applyTheme(initial);
+
+  button.addEventListener("click", function(){
+    applyTheme(root.getAttribute("data-theme") === "light" ? "dark" : "light");
+  });
+})();

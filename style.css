@@ -326,3 +326,811 @@ footer{
   height:100%;
   object-fit:contain;
 }
+
+/* =========================================================
+   Theme system
+   Dark = existing Tasik FKEE theme
+   Light = soft off-white / warm neutral
+   ========================================================= */
+:root{
+  --page-bg:#061426;
+  --page-bg-2:#081b30;
+  --surface:#0b2136;
+  --surface-2:#0d263e;
+  --surface-soft:rgba(11,33,54,.70);
+  --border:rgba(151,194,225,.10);
+  --border-strong:rgba(151,194,225,.16);
+  --text:#f3f7fb;
+  --text-soft:#8da8c1;
+  --text-muted:#6685a2;
+  --accent:#35a8ff;
+  --grid:rgba(151,194,225,.055);
+  --shadow:rgba(0,0,0,.18);
+  --chart-text:#8da8c1;
+}
+
+html[data-theme="light"]{
+  --page-bg:#f1f3f0;
+  --page-bg-2:#e9eeeb;
+  --surface:#f8faf8;
+  --surface-2:#eef2ef;
+  --surface-soft:rgba(248,250,248,.92);
+  --border:rgba(35,55,70,.11);
+  --border-strong:rgba(35,55,70,.17);
+  --text:#17232d;
+  --text-soft:#62727d;
+  --text-muted:#71828d;
+  --accent:#168bd2;
+  --grid:rgba(35,55,70,.055);
+  --shadow:rgba(28,42,50,.10);
+  --chart-text:#647680;
+}
+
+/* Page */
+html[data-theme="light"] body{
+  background:
+    radial-gradient(circle at 50% -15%, rgba(22,139,210,.055), transparent 36%),
+    linear-gradient(180deg,var(--page-bg-2),var(--page-bg));
+  color:var(--text);
+}
+
+html[data-theme="light"] body::before{
+  opacity:.35;
+}
+
+html[data-theme="light"] .topbar{
+  background:rgba(241,243,240,.92);
+  border-bottom-color:var(--border);
+  box-shadow:0 8px 30px rgba(30,45,55,.04);
+}
+
+html[data-theme="light"] .card,
+html[data-theme="light"] .partners-panel,
+html[data-theme="light"] .chart-card,
+html[data-theme="light"] .stat-card,
+html[data-theme="light"] .info-card{
+  background:linear-gradient(145deg,var(--surface),var(--surface-2));
+  border-color:var(--border);
+  box-shadow:0 18px 45px var(--shadow);
+}
+
+html[data-theme="light"] .brand strong,
+html[data-theme="light"] h1,
+html[data-theme="light"] h2,
+html[data-theme="light"] h3,
+html[data-theme="light"] .value,
+html[data-theme="light"] .footer-brand{
+  color:var(--text);
+}
+
+html[data-theme="light"] .brand small,
+html[data-theme="light"] .subtitle,
+html[data-theme="light"] .muted,
+html[data-theme="light"] .card-subtitle{
+  color:var(--text-soft);
+}
+
+html[data-theme="light"] .partner-title span,
+html[data-theme="light"] .eyebrow,
+html[data-theme="light"] .section-label{
+  color:#658096;
+}
+
+html[data-theme="light"] .partner-separator{
+  background:linear-gradient(90deg,transparent,rgba(35,55,70,.13),transparent);
+}
+
+html[data-theme="light"] .partner-divider{
+  background:rgba(35,55,70,.13);
+}
+
+html[data-theme="light"] .partner-logo{
+  opacity:.68;
+}
+
+html[data-theme="light"] .theme-toggle{
+  background:rgba(255,255,255,.70);
+  border-color:var(--border-strong);
+  color:#435560;
+}
+
+html[data-theme="light"] .theme-toggle:hover{
+  background:#fff;
+  border-color:rgba(22,139,210,.25);
+}
+
+html[data-theme="light"] .top-status{
+  background:rgba(255,255,255,.58);
+  border-color:var(--border);
+}
+
+html[data-theme="light"] select,
+html[data-theme="light"] .range-select{
+  background:#f8faf8;
+  color:var(--text);
+  border-color:var(--border-strong);
+}
+
+html[data-theme="light"] footer{
+  color:#71828d;
+}
+
+html[data-theme="light"] .chart-card canvas{
+  /* Keep Chart.js canvas transparent; JS controls grid/text colors. */
+  filter:none;
+}
+
+/* Theme button */
+.theme-toggle{
+  appearance:none;
+  border:1px solid rgba(151,194,225,.14);
+  background:rgba(8,27,48,.72);
+  color:#a9bfd2;
+  min-height:34px;
+  padding:0 11px;
+  border-radius:10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  font:inherit;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.2px;
+  cursor:pointer;
+  transition:background .2s ease,border-color .2s ease,color .2s ease,transform .15s ease;
+}
+
+.theme-toggle:hover{
+  background:rgba(13,38,62,.95);
+  border-color:rgba(53,168,255,.28);
+  color:#d7e7f4;
+}
+
+.theme-toggle:active{
+  transform:translateY(1px);
+}
+
+.theme-icon{
+  font-size:15px;
+  line-height:1;
+}
+
+.theme-toggle-label{
+  min-width:31px;
+  text-align:left;
+}
+
+@media(max-width:700px){
+  .theme-toggle{
+    width:34px;
+    min-width:34px;
+    padding:0;
+    gap:0;
+  }
+  .theme-toggle-label{
+    display:none;
+  }
+}
+
+/* Header actions: theme control immediately left of system status */
+.header-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  margin-left:auto;
+}
+
+.header-actions .theme-toggle{
+  flex:0 0 auto;
+}
+
+.header-actions .top-status{
+  flex:0 0 auto;
+}
+
+@media(max-width:700px){
+  .header-actions{
+    gap:7px;
+  }
+}
+
+/* =========================================================
+   LIGHT MODE V2 — softer blue-grey surfaces + dark partner card
+   ========================================================= */
+
+/* Main light-mode palette */
+html[data-theme="light"] body{
+  background:
+    radial-gradient(circle at 8% 35%, rgba(77,183,222,.085), transparent 28%),
+    radial-gradient(circle at 94% 28%, rgba(113,157,201,.075), transparent 30%),
+    linear-gradient(180deg,#f3f5f2 0%,#edf1ef 100%);
+}
+
+/* Header */
+html[data-theme="light"] .topbar{
+  background:rgba(248,250,248,.94);
+  border-bottom-color:rgba(42,65,79,.10);
+}
+
+/* Hero text */
+html[data-theme="light"] .hero .subtitle{
+  color:#7891a5;
+}
+
+html[data-theme="light"] .hero .eyebrow,
+html[data-theme="light"] .section-kicker{
+  color:#238fca;
+}
+
+/* Sensor cards: soft blue-grey instead of dark navy */
+html[data-theme="light"] .metric-card{
+  background:linear-gradient(145deg,#e5edf1 0%,#dce7ed 100%);
+  border-color:rgba(54,83,101,.13);
+  box-shadow:0 16px 35px rgba(42,65,79,.10);
+}
+
+html[data-theme="light"] .metric-card:hover{
+  background:linear-gradient(145deg,#eaf1f4 0%,#e0eaf0 100%);
+  border-color:rgba(35,143,202,.20);
+}
+
+html[data-theme="light"] .metric-head>span{
+  color:#6d8799;
+}
+
+html[data-theme="light"] .metric-value strong{
+  color:#1c3444;
+}
+
+html[data-theme="light"] .metric-value small{
+  color:#607989;
+}
+
+html[data-theme="light"] .metric-caption{
+  color:#708695;
+}
+
+html[data-theme="light"] .metric-icon{
+  background:rgba(255,255,255,.30);
+  border-color:rgba(54,83,101,.13);
+}
+
+/* History / solar cards */
+html[data-theme="light"] .section-panel{
+  background:linear-gradient(145deg,#e3ebef 0%,#dbe6ec 100%);
+  border-color:rgba(54,83,101,.13);
+  box-shadow:0 18px 40px rgba(42,65,79,.10);
+}
+
+html[data-theme="light"] .section-head h2{
+  color:#203747;
+}
+
+html[data-theme="light"] .section-head p,
+html[data-theme="light"] .chart-note{
+  color:#718694;
+}
+
+html[data-theme="light"] select{
+  background:#f8faf9;
+  color:#263d4d;
+  border-color:rgba(54,83,101,.16);
+}
+
+/* Project logos: deliberately darker than the page so the logos retain contrast */
+html[data-theme="light"] .partners-panel{
+  background:
+    radial-gradient(circle at 15% 15%,rgba(69,199,255,.045),transparent 35%),
+    linear-gradient(145deg,#193246 0%,#142b3d 55%,#12283a 100%);
+  border-color:rgba(69,199,255,.13);
+  box-shadow:
+    0 20px 45px rgba(33,55,68,.15),
+    inset 0 1px 0 rgba(255,255,255,.035);
+}
+
+html[data-theme="light"] .partner-title span{
+  color:#8eabc0;
+}
+
+html[data-theme="light"] .partner-separator{
+  background:linear-gradient(90deg,transparent,rgba(143,181,207,.18),transparent);
+}
+
+html[data-theme="light"] .partner-divider{
+  background:rgba(143,181,207,.18);
+}
+
+html[data-theme="light"] .partner-logo{
+  opacity:.82;
+}
+
+html[data-theme="light"] .partner-logo:hover{
+  opacity:1;
+}
+
+html[data-theme="light"] footer{
+  color:#718492;
+}
+
+html[data-theme="light"] footer .footer-brand{
+  color:#304756;
+}
+
+/* Keep the light-mode toggle/status controls subtle */
+html[data-theme="light"] .theme-toggle{
+  background:rgba(255,255,255,.72);
+  color:#435965;
+}
+
+html[data-theme="light"] .top-status{
+  background:rgba(255,255,255,.66);
+}
+
+/* Mobile: keep the dark logo panel visually distinct but not heavy */
+@media(max-width:700px){
+  html[data-theme="light"] .partners-panel{
+    box-shadow:0 14px 32px rgba(33,55,68,.12);
+  }
+}
+
+/* =========================================================
+   LIGHT MODE V3 — partner card blends with the page
+   while keeping strong logo contrast
+   ========================================================= */
+html[data-theme="light"] .partners-panel{
+  background:
+    radial-gradient(circle at 18% 20%,rgba(104,187,216,.055),transparent 34%),
+    radial-gradient(circle at 82% 80%,rgba(255,255,255,.035),transparent 38%),
+    linear-gradient(145deg,#294252 0%,#263f4f 52%,#233c4b 100%);
+  border-color:rgba(78,116,135,.20);
+  box-shadow:
+    0 18px 38px rgba(42,65,79,.11),
+    inset 0 1px 0 rgba(255,255,255,.045);
+}
+
+html[data-theme="light"] .partner-title span{
+  color:#9bb2c2;
+}
+
+html[data-theme="light"] .partner-separator{
+  background:linear-gradient(90deg,transparent,rgba(184,210,223,.16),transparent);
+}
+
+html[data-theme="light"] .partner-divider{
+  background:rgba(184,210,223,.17);
+}
+
+html[data-theme="light"] .partner-logo{
+  opacity:.88;
+  filter:drop-shadow(0 3px 8px rgba(0,0,0,.08));
+  transition:opacity .2s ease,filter .2s ease;
+}
+
+html[data-theme="light"] .partner-logo:hover{
+  opacity:1;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.14));
+}
+
+/* =========================================================
+   LIGHT MODE V4 — faded partner panel that blends into page
+   Darker only where the logos sit, softer toward the edges.
+   ========================================================= */
+html[data-theme="light"] .partners-panel{
+  background:
+    radial-gradient(
+      ellipse 72% 88% at 50% 50%,
+      rgba(39,67,82,.94) 0%,
+      rgba(48,77,91,.88) 42%,
+      rgba(74,101,113,.58) 68%,
+      rgba(191,207,208,.30) 88%,
+      rgba(225,232,229,.10) 100%
+    );
+  border-color:rgba(91,119,131,.17);
+  box-shadow:
+    0 16px 34px rgba(42,65,79,.08),
+    inset 0 1px 0 rgba(255,255,255,.055);
+}
+
+html[data-theme="light"] .partners-panel::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(237,242,239,.22) 0%,
+      transparent 18%,
+      transparent 82%,
+      rgba(237,242,239,.22) 100%
+    );
+  opacity:.65;
+}
+
+html[data-theme="light"] .partner-logo{
+  opacity:.90;
+  filter:drop-shadow(0 2px 7px rgba(0,0,0,.08));
+}
+
+html[data-theme="light"] .partner-logo:hover{
+  opacity:1;
+  filter:drop-shadow(0 3px 9px rgba(0,0,0,.13));
+}
+
+/* =========================================================
+   LIGHT MODE V5 — tighter, subtler logo-card fade
+   Keeps the darker focus behind the logos only.
+   ========================================================= */
+html[data-theme="light"] .partners-panel{
+  background:
+    radial-gradient(
+      ellipse 48% 58% at 50% 50%,
+      rgba(40,69,84,.88) 0%,
+      rgba(53,81,94,.72) 34%,
+      rgba(92,116,126,.34) 60%,
+      rgba(211,222,221,.08) 78%,
+      transparent 100%
+    );
+  border-color:rgba(91,119,131,.13);
+  box-shadow:
+    0 14px 30px rgba(42,65,79,.06),
+    inset 0 1px 0 rgba(255,255,255,.045);
+}
+
+html[data-theme="light"] .partners-panel::after{
+  background:
+    linear-gradient(
+      90deg,
+      rgba(237,242,239,.10) 0%,
+      transparent 24%,
+      transparent 76%,
+      rgba(237,242,239,.10) 100%
+    );
+  opacity:.45;
+}
+
+html[data-theme="light"] .partner-logo{
+  opacity:.94;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.08));
+}
+
+html[data-theme="light"] .partner-logo:hover{
+  opacity:1;
+  filter:drop-shadow(0 3px 8px rgba(0,0,0,.12));
+}
+
+/* =========================================================
+   LIGHT MODE V6 — fade only at the CARD EDGES
+   Darker center keeps the logos prominent; edges blend
+   softly into the off-white page.
+   ========================================================= */
+html[data-theme="light"] .partners-panel{
+  background:
+    radial-gradient(
+      ellipse 76% 78% at 50% 50%,
+      #294757 0%,
+      #294757 58%,
+      rgba(41,71,87,.90) 70%,
+      rgba(41,71,87,.58) 84%,
+      rgba(41,71,87,.18) 96%,
+      rgba(41,71,87,0) 100%
+    );
+  border-color:rgba(78,108,120,.16);
+  box-shadow:
+    0 10px 28px rgba(42,65,79,.045),
+    inset 0 0 0 1px rgba(255,255,255,.025);
+}
+
+/* Remove the previous center-overlay fade. */
+html[data-theme="light"] .partners-panel::after{
+  background:none;
+  opacity:0;
+}
+
+html[data-theme="light"] .partner-logo{
+  opacity:.96;
+  filter:drop-shadow(0 2px 7px rgba(0,0,0,.10));
+}
+
+html[data-theme="light"] .partner-logo:hover{
+  opacity:1;
+  filter:drop-shadow(0 3px 9px rgba(0,0,0,.14));
+}
+
+/* =========================================================
+   LIGHT MODE V7 — full perimeter fade
+   The center stays readable while TOP / BOTTOM / LEFT /
+   RIGHT edges all fade smoothly into the page.
+   ========================================================= */
+html[data-theme="light"] .partners-panel{
+  background:
+    radial-gradient(
+      ellipse 62% 72% at 50% 50%,
+      rgba(41,71,87,1) 0%,
+      rgba(41,71,87,.98) 42%,
+      rgba(41,71,87,.86) 58%,
+      rgba(41,71,87,.55) 72%,
+      rgba(41,71,87,.22) 86%,
+      rgba(41,71,87,0) 100%
+    );
+  border-color:rgba(91,119,131,.10);
+  box-shadow:none;
+}
+
+/* Remove the old edge overlay so the new fade controls the
+   entire perimeter consistently. */
+html[data-theme="light"] .partners-panel::after{
+  display:none;
+}
+
+/* Keep the logo area crisp against the softer perimeter. */
+html[data-theme="light"] .partner-logo{
+  opacity:.96;
+  filter:drop-shadow(0 2px 7px rgba(0,0,0,.10));
+}
+
+html[data-theme="light"] .partner-logo:hover{
+  opacity:1;
+  filter:drop-shadow(0 3px 9px rgba(0,0,0,.14));
+}
+
+/* =========================================================
+   LIGHT MODE V8 — clean solid partner card
+   A muted blue-grey surface replaces the fade so the
+   partner section feels intentional and the logos pop.
+   ========================================================= */
+html[data-theme="light"] .partners-panel{
+  background:#294757;
+  border:1px solid rgba(47,75,89,.18);
+  box-shadow:
+    0 12px 28px rgba(42,65,79,.08),
+    inset 0 1px 0 rgba(255,255,255,.045);
+}
+
+html[data-theme="light"] .partners-panel::after{
+  display:none;
+}
+
+html[data-theme="light"] .partner-title span{
+  color:#a9bdc9;
+}
+
+html[data-theme="light"] .partner-separator{
+  background:linear-gradient(90deg,transparent,rgba(181,207,220,.16),transparent);
+}
+
+html[data-theme="light"] .partner-divider{
+  background:rgba(181,207,220,.18);
+}
+
+html[data-theme="light"] .partner-logo{
+  opacity:.94;
+  filter:drop-shadow(0 2px 7px rgba(0,0,0,.12));
+}
+
+html[data-theme="light"] .partner-logo:hover{
+  opacity:1;
+  filter:drop-shadow(0 3px 9px rgba(0,0,0,.16));
+}
+
+
+/* Dedicated water-level history */
+.water-level-panel {
+  margin-bottom: 18px;
+}
+
+@media (max-width: 700px) {
+  .water-level-panel {
+    margin-bottom: 14px;
+  }
+}
+
+
+/* Standalone history range selector */
+.history-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--panel) 72%, transparent);
+}
+
+.history-toolbar > div {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-right: auto;
+}
+
+.history-toolbar-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  color: var(--accent);
+}
+
+.history-toolbar-text {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.history-toolbar select {
+  min-width: 110px;
+  height: 36px;
+}
+
+@media (max-width: 700px) {
+  .history-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .history-toolbar > div {
+    display: block;
+    margin-right: 0;
+  }
+
+  .history-toolbar-text {
+    display: block;
+    margin-top: 3px;
+  }
+
+  .history-toolbar select {
+    width: 100%;
+  }
+}
+
+
+/* Historical-data label on chart panels */
+.section-panel {
+  position: relative;
+}
+
+.historical-data {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.historical-data .status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+@media (max-width: 700px) {
+  .historical-data {
+    top: 18px;
+    right: 18px;
+    font-size: 10px;
+  }
+}
+
+
+/* Theme toggle: compact control immediately left of System Status */
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.theme-toggle {
+  min-height: 38px;
+  min-width: 72px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, color .2s ease;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+}
+
+@media (max-width: 700px) {
+  .header-actions {
+    gap: 7px;
+  }
+
+  .theme-toggle {
+    min-width: 42px;
+    width: 42px;
+    padding: 0;
+  }
+
+  .theme-toggle .theme-label {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   V22 THEME TOGGLE FIX
+   Explicit light-mode surfaces for the current dashboard UI.
+   ========================================================= */
+html[data-theme="light"] .metric-card{
+  background:linear-gradient(145deg,#e5edf1 0%,#dce7ed 100%);
+  border-color:rgba(54,83,101,.13);
+  box-shadow:0 16px 35px rgba(42,65,79,.10);
+}
+html[data-theme="light"] .metric-card:hover{
+  background:linear-gradient(145deg,#eaf1f4 0%,#e0eaf0 100%);
+}
+html[data-theme="light"] .metric-head>span{color:#6d8799}
+html[data-theme="light"] .metric-value strong{color:#1c3444}
+html[data-theme="light"] .metric-value small{color:#607989}
+html[data-theme="light"] .metric-caption{color:#708695}
+html[data-theme="light"] .metric-icon{
+  background:rgba(255,255,255,.30);
+  border-color:rgba(54,83,101,.13);
+}
+html[data-theme="light"] .section-panel{
+  background:linear-gradient(145deg,#e3ebef 0%,#dbe6ec 100%);
+  border-color:rgba(54,83,101,.13);
+  box-shadow:0 18px 40px rgba(42,65,79,.10);
+}
+html[data-theme="light"] .section-head h2{color:#203747}
+html[data-theme="light"] .section-head p,
+html[data-theme="light"] .chart-note{color:#718694}
+html[data-theme="light"] .history-toolbar{
+  background:rgba(255,255,255,.48);
+  border-color:rgba(54,83,101,.12);
+}
+html[data-theme="light"] .history-toolbar-text{color:#718694}
+html[data-theme="light"] .topbar{
+  background:rgba(248,250,248,.94);
+  border-bottom-color:rgba(42,65,79,.10);
+}
+html[data-theme="light"] .brand{color:#17232d}
+html[data-theme="light"] .brand strong{color:#17232d}
+html[data-theme="light"] .brand small{color:#62727d}
+html[data-theme="light"] .top-status{
+  background:rgba(255,255,255,.66);
+  border-color:rgba(35,55,70,.11);
+}
+html[data-theme="light"] .top-status b{color:#62727d}
+html[data-theme="light"] .top-status.online b{color:#159d75}
+html[data-theme="light"] .live-meta strong{color:#304756}
+html[data-theme="light"] .update-label{color:#71828d}
+html[data-theme="light"] .history-toolbar select,
+html[data-theme="light"] select{
+  background:#f8faf9;
+  color:#263d4d;
+  border-color:rgba(54,83,101,.16);
+}
+html[data-theme="light"] .theme-toggle{
+  background:rgba(255,255,255,.72);
+  color:#435965;
+  border-color:rgba(54,83,101,.16);
+}
+html[data-theme="light"] .theme-toggle:hover{
+  background:#fff;
+  border-color:rgba(22,139,210,.25);
+}
