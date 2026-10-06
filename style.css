@@ -1135,47 +1135,442 @@ html[data-theme="light"] .theme-toggle:hover{
   border-color:rgba(22,139,210,.25);
 }
 
-/* Main portal navigation */
-.portal-back{
-  display:inline-flex;
-  align-items:center;
-  gap:9px;
-  min-height:42px;
-  padding:8px 13px;
-  border:1px solid rgba(69,199,255,.28);
-  border-radius:12px;
-  background:rgba(10,30,49,.62);
-  color:var(--text);
-  text-decoration:none;
-  font-size:13px;
-  font-weight:800;
-  letter-spacing:.5px;
-  transition:background .2s ease,border-color .2s ease,transform .2s ease;
+
+/* =========================================================
+   TASIK KEMAJUAN HERO
+   Cinematic aerial image generated for the UTHM IoT portal.
+   ========================================================= */
+.hero.hero-image{
+  position:relative;
+  min-height:300px;
+  padding:48px 44px;
+  border:1px solid rgba(69,199,255,.14);
+  border-radius:18px;
+  overflow:hidden;
+  background:
+    linear-gradient(90deg,rgba(3,13,24,.94) 0%,rgba(3,13,24,.76) 38%,rgba(3,13,24,.28) 72%,rgba(3,13,24,.46) 100%),
+    linear-gradient(180deg,rgba(2,10,18,.08) 20%,rgba(2,10,18,.72) 100%),
+    url("tasik-kemajuan-header.png") center 52% / cover no-repeat;
+  box-shadow:0 26px 70px rgba(0,0,0,.30);
 }
-.portal-back:hover{
-  background:rgba(24,72,104,.68);
-  border-color:rgba(69,199,255,.55);
-  transform:translateY(-1px);
+.hero.hero-image::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(69,199,255,.045),transparent 55%);
 }
-.portal-back-arrow{
-  color:var(--cyan);
-  font-size:19px;
-  line-height:1;
+.hero.hero-image .hero-copy,
+.hero.hero-image .live-meta{
+  position:relative;
+  z-index:1;
 }
-.portal-back small{
-  color:var(--muted);
-  font-size:9px;
-  font-weight:700;
-  letter-spacing:1px;
-  text-transform:uppercase;
+.hero.hero-image .hero-copy{
+  max-width:780px;
 }
-@media(max-width:680px){
-  .portal-back{
-    min-height:44px;
-    padding:8px 11px;
-    gap:7px;
-    font-size:12px;
+.hero.hero-image h1{
+  text-shadow:0 5px 24px rgba(0,0,0,.42);
+}
+.hero.hero-image p{
+  color:#d3e1ec;
+  text-shadow:0 2px 12px rgba(0,0,0,.55);
+}
+.hero.hero-image .eyebrow{
+  color:#5fd1ff;
+}
+.hero.hero-image .live-meta{
+  padding:15px 17px;
+  border:1px solid rgba(151,194,225,.15);
+  border-radius:14px;
+  background:rgba(3,15,27,.48);
+  backdrop-filter:blur(10px);
+}
+@media(max-width:760px){
+  .hero.hero-image{
+    min-height:420px;
+    padding:32px 24px;
+    background-position:center 50%;
   }
-  .portal-back-arrow{font-size:18px}
-  .portal-back small{display:none}
+  .hero.hero-image .live-meta{
+    width:100%;
+    text-align:left;
+  }
+}
+
+
+/* =========================================================
+   LIGHT MODE — CINEMATIC HERO CONTRAST FIX
+   Keep the photo dark/cinematic, but restore white hero
+   typography so it remains readable in light mode.
+   ========================================================= */
+html[data-theme="light"] .hero.hero-image{
+  color:#f7fbff;
+  background:
+    linear-gradient(90deg,rgba(2,13,24,.91) 0%,rgba(2,13,24,.72) 43%,rgba(2,13,24,.32) 76%,rgba(2,13,24,.46) 100%),
+    linear-gradient(180deg,rgba(2,10,18,.10) 18%,rgba(2,10,18,.68) 100%),
+    url("tasik-kemajuan-header.png") center 52% / cover no-repeat;
+  border-color:rgba(22,139,210,.18);
+  box-shadow:0 22px 55px rgba(28,42,50,.16);
+}
+
+html[data-theme="light"] .hero.hero-image h1{
+  color:#f8fbff !important;
+  text-shadow:0 4px 20px rgba(0,0,0,.48);
+}
+
+html[data-theme="light"] .hero.hero-image p{
+  color:#dce9f2 !important;
+  text-shadow:0 2px 10px rgba(0,0,0,.55);
+}
+
+html[data-theme="light"] .hero.hero-image .eyebrow{
+  color:#4fc7ff !important;
+  text-shadow:0 2px 10px rgba(0,0,0,.35);
+}
+
+html[data-theme="light"] .hero.hero-image .eyebrow span{
+  background:#4fc7ff;
+  box-shadow:0 0 12px rgba(79,199,255,.85);
+}
+
+html[data-theme="light"] .hero.hero-image .live-meta{
+  background:rgba(4,19,32,.68);
+  border-color:rgba(111,213,255,.18);
+  box-shadow:0 12px 30px rgba(0,0,0,.16);
+}
+
+html[data-theme="light"] .hero.hero-image .live-badge{
+  background:rgba(57,230,164,.08);
+  border-color:rgba(57,230,164,.24);
+}
+
+html[data-theme="light"] .hero.hero-image .update-label{
+  color:#9db5c5 !important;
+}
+
+html[data-theme="light"] .hero.hero-image .live-meta strong{
+  color:#eef8ff !important;
+}
+
+
+/* =========================================================
+   LIGHT MODE — HERO LIVE-DATA CARD
+   Light glass card so it blends with the light page while
+   remaining readable over the cinematic header image.
+   ========================================================= */
+html[data-theme="light"] .hero.hero-image .live-meta{
+  background:rgba(248,250,248,.88);
+  border:1px solid rgba(54,83,101,.14);
+  border-radius:16px;
+  padding:14px 16px;
+  color:#263d4d;
+  box-shadow:
+    0 12px 28px rgba(28,42,50,.13),
+    inset 0 1px 0 rgba(255,255,255,.72);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+
+html[data-theme="light"] .hero.hero-image .live-badge{
+  background:rgba(57,190,137,.10);
+  border-color:rgba(39,164,116,.22);
+  color:#16845f;
+}
+
+html[data-theme="light"] .hero.hero-image .update-label{
+  color:#71828d !important;
+}
+
+html[data-theme="light"] .hero.hero-image .live-meta strong{
+  color:#263d4d !important;
+}
+
+
+/* =========================================================
+   LIGHT MODE — HEADER CARD MATCHES PAGE SURFACE
+   The photo remains visible as a subtle background layer,
+   while the card itself uses the same soft light surface
+   as the dashboard cards below.
+   ========================================================= */
+html[data-theme="light"] .hero.hero-image{
+  color:#294052;
+  background:
+    linear-gradient(90deg,rgba(226,236,241,.94) 0%,rgba(226,236,241,.88) 46%,rgba(226,236,241,.68) 78%,rgba(226,236,241,.80) 100%),
+    linear-gradient(180deg,rgba(226,236,241,.76) 0%,rgba(226,236,241,.90) 100%),
+    url("tasik-kemajuan-header.png") center 52% / cover no-repeat;
+  border:1px solid rgba(111,139,154,.18);
+  box-shadow:0 14px 34px rgba(65,91,105,.10);
+}
+
+html[data-theme="light"] .hero.hero-image h1{
+  color:#263d4d !important;
+  text-shadow:none;
+}
+
+html[data-theme="light"] .hero.hero-image p{
+  color:#526b7a !important;
+  text-shadow:none;
+}
+
+html[data-theme="light"] .hero.hero-image .eyebrow{
+  color:#1699d3 !important;
+  text-shadow:none;
+}
+
+html[data-theme="light"] .hero.hero-image .eyebrow span{
+  background:#27b6eb;
+  box-shadow:0 0 10px rgba(39,182,235,.35);
+}
+
+html[data-theme="light"] .hero.hero-image .live-meta{
+  background:rgba(231,239,243,.88);
+  border:1px solid rgba(111,139,154,.16);
+  box-shadow:0 10px 24px rgba(65,91,105,.08);
+}
+
+
+/* =========================================================
+   LIGHT MODE — TASIK KEMAJUAN HERO
+   Match the main UTHM IoT portal's cinematic hero style.
+   The page remains light, while the hero is intentionally
+   a dark photo banner with high-contrast typography.
+   ========================================================= */
+html[data-theme="light"] .hero.hero-image{
+  color:#f7fbff;
+  background:
+    linear-gradient(90deg,rgba(2,11,19,.93) 0%,rgba(2,11,19,.78) 40%,rgba(2,11,19,.34) 76%,rgba(2,11,19,.48) 100%),
+    linear-gradient(180deg,rgba(2,10,18,.08) 10%,rgba(2,10,18,.78) 100%),
+    url("tasik-kemajuan-header.png") center 52% / cover no-repeat;
+  border:1px solid rgba(18,91,124,.55);
+  box-shadow:0 18px 42px rgba(0,0,0,.16);
+}
+
+html[data-theme="light"] .hero.hero-image h1{
+  color:#f7fbff !important;
+  text-shadow:0 4px 20px rgba(0,0,0,.50);
+}
+
+html[data-theme="light"] .hero.hero-image p{
+  color:#d9e8f2 !important;
+  text-shadow:0 2px 10px rgba(0,0,0,.55);
+}
+
+html[data-theme="light"] .hero.hero-image .eyebrow{
+  color:#38bfff !important;
+  text-shadow:0 2px 10px rgba(0,0,0,.45);
+}
+
+html[data-theme="light"] .hero.hero-image .eyebrow span{
+  background:#38bfff;
+  box-shadow:0 0 12px rgba(56,191,255,.75);
+}
+
+html[data-theme="light"] .hero.hero-image .live-meta{
+  background:rgba(5,20,32,.72);
+  border:1px solid rgba(93,190,229,.20);
+  color:#eef8ff;
+  box-shadow:0 12px 30px rgba(0,0,0,.18);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+
+html[data-theme="light"] .hero.hero-image .live-badge{
+  background:rgba(57,230,164,.08);
+  border-color:rgba(57,230,164,.28);
+  color:#5be9b1;
+}
+
+html[data-theme="light"] .hero.hero-image .update-label{
+  color:#91aebe !important;
+}
+
+html[data-theme="light"] .hero.hero-image .live-meta strong{
+  color:#f0f8fc !important;
+}
+
+
+/* =========================================================
+   TASIK KEMAJUAN HERO — FULL-BLEED PORTAL STYLE
+   No card treatment: no rounded container, no framed border.
+   The image blends directly into the dashboard background.
+   ========================================================= */
+.hero.hero-image{
+  position:relative;
+  width:100%;
+  min-height:330px;
+  margin:0;
+  padding:56px 48px 42px;
+  border:0 !important;
+  border-radius:0 !important;
+  overflow:hidden;
+  box-shadow:none !important;
+  background:
+    linear-gradient(90deg,rgba(2,11,19,.94) 0%,rgba(2,11,19,.78) 40%,rgba(2,11,19,.30) 78%,rgba(2,11,19,.46) 100%),
+    linear-gradient(180deg,rgba(2,10,18,.04) 10%,rgba(2,10,18,.84) 100%),
+    url("tasik-kemajuan-header.png") center 52% / cover no-repeat;
+}
+
+.hero.hero-image::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(180deg,rgba(2,10,18,0) 58%,rgba(2,10,18,.72) 100%);
+}
+
+.hero.hero-image::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:1px;
+  background:rgba(54,180,232,.20);
+  pointer-events:none;
+}
+
+.hero.hero-image .hero-copy,
+.hero.hero-image .live-meta{
+  position:relative;
+  z-index:2;
+}
+
+.hero.hero-image .hero-copy{
+  max-width:780px;
+}
+
+.hero.hero-image h1{
+  text-shadow:0 4px 20px rgba(0,0,0,.52);
+}
+
+.hero.hero-image p{
+  text-shadow:0 2px 10px rgba(0,0,0,.55);
+}
+
+.hero.hero-image .live-meta{
+  background:rgba(4,18,30,.58);
+  border:1px solid rgba(93,190,229,.18);
+  box-shadow:0 10px 28px rgba(0,0,0,.14);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+
+/* Light mode keeps the exact same cinematic hero treatment.
+   The page beneath remains the light dashboard surface. */
+html[data-theme="light"] .hero.hero-image{
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  background:
+    linear-gradient(90deg,rgba(2,11,19,.92) 0%,rgba(2,11,19,.75) 40%,rgba(2,11,19,.30) 78%,rgba(2,11,19,.45) 100%),
+    linear-gradient(180deg,rgba(2,10,18,.03) 10%,rgba(2,10,18,.82) 100%),
+    url("tasik-kemajuan-header.png") center 52% / cover no-repeat;
+}
+
+html[data-theme="light"] .hero.hero-image h1{
+  color:#f7fbff !important;
+  text-shadow:0 4px 20px rgba(0,0,0,.52);
+}
+
+html[data-theme="light"] .hero.hero-image p{
+  color:#d9e8f2 !important;
+  text-shadow:0 2px 10px rgba(0,0,0,.55);
+}
+
+html[data-theme="light"] .hero.hero-image .eyebrow{
+  color:#38bfff !important;
+}
+
+html[data-theme="light"] .hero.hero-image .live-meta{
+  background:rgba(4,18,30,.58);
+  border:1px solid rgba(93,190,229,.18);
+  color:#eef8ff;
+}
+
+
+/* =========================================================
+   TASIK KEMAJUAN HERO — USE THE FULL AVAILABLE WIDTH
+   Remove the inner max-width/side gutters around the hero.
+   ========================================================= */
+.hero.hero-image{
+  width:100vw;
+  max-width:none !important;
+  margin-left:calc(50% - 50vw);
+  margin-right:calc(50% - 50vw);
+  border-left:0 !important;
+  border-right:0 !important;
+}
+
+@media(max-width:760px){
+  .hero.hero-image{
+    width:100%;
+    margin-left:0;
+    margin-right:0;
+  }
+}
+
+
+/* =========================================================
+   TASIK KEMAJUAN HERO — TOP ALIGNMENT + SENSOR GAP
+   ========================================================= */
+
+/* Keep the aerial photo anchored to the top edge of the hero. */
+.hero.hero-image{
+  background-position:center top !important;
+  margin-bottom:30px !important;
+}
+
+/* Give the first sensor row a clean breathing space below the hero. */
+.hero.hero-image + .metrics,
+.hero.hero-image + .sensor-grid,
+.hero.hero-image + .cards-grid{
+  margin-top:0 !important;
+}
+
+/* If the dashboard uses a generic grid wrapper immediately after
+   the hero, preserve the 30px visual separation. */
+.hero.hero-image ~ .metrics:first-of-type,
+.hero.hero-image ~ .sensor-grid:first-of-type{
+  margin-top:30px !important;
+}
+
+
+/* =========================================================
+   TASIK KEMAJUAN HERO — MOVE PHOTO UP TO REMOVE TOP VOID
+   Keep the sensor-card gap unchanged.
+   ========================================================= */
+.hero.hero-image{
+  margin-top:-44px !important;
+  background-position:center top !important;
+}
+
+
+/* =========================================================
+   MOBILE — FULL-WIDTH TASIK KEMAJUAN PHOTO
+   Let the hero image reach the phone's left/right edges,
+   regardless of the dashboard content wrapper width.
+   ========================================================= */
+@media (max-width:760px){
+  .hero.hero-image{
+    width:100vw !important;
+    max-width:none !important;
+    margin-left:calc(50% - 50vw) !important;
+    margin-right:calc(50% - 50vw) !important;
+    border-left:0 !important;
+    border-right:0 !important;
+    border-radius:0 !important;
+    background-size:cover !important;
+    background-position:center top !important;
+    margin-bottom:30px !important;
+  }
+
+  .hero.hero-image .hero-copy{
+    width:100%;
+    max-width:none;
+  }
+
+  .hero.hero-image .live-meta{
+    width:100%;
+    box-sizing:border-box;
+  }
 }
