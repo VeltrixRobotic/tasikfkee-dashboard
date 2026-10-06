@@ -1198,15 +1198,11 @@ html[data-theme="light"] .theme-toggle:hover{
   .portal-back{padding:8px 10px !important;font-size:11px !important}
 }
 
-/* Full-bleed Tasik Kemajuan cinematic hero.
-   The Tasik Kemajuan logo remains favicon-only.
-   The image fills the viewport while the overlays fade it naturally into the dashboard. */
+/* Restore the original Tasik Kemajuan cinematic hero background.
+   The Tasik Kemajuan logo remains favicon-only. */
 .hero.hero-image{
   position:relative;
-  width:100vw;
-  margin-left:calc(50% - 50vw);
   min-height:330px;
-  margin-top:0;
   margin-bottom:28px;
   padding:34px 38px;
   overflow:hidden;
@@ -1215,7 +1211,7 @@ html[data-theme="light"] .theme-toggle:hover{
   align-items:flex-end;
   background-image:url('tasik-kemajuan-header.png');
   background-size:cover;
-  background-position:center top;
+  background-position:center center;
   box-shadow:none;
 }
 .hero.hero-image::before{
@@ -1223,8 +1219,8 @@ html[data-theme="light"] .theme-toggle:hover{
   position:absolute;
   inset:0;
   background:
-    linear-gradient(90deg,rgba(2,11,20,.92) 0%,rgba(2,11,20,.70) 30%,rgba(2,11,20,.30) 65%,rgba(2,11,20,.16) 82%,rgba(2,11,20,.34) 100%),
-    linear-gradient(180deg,rgba(2,11,20,.18) 0%,rgba(2,11,20,.04) 42%,rgba(2,11,20,.62) 82%,rgba(6,17,31,.98) 100%);
+    linear-gradient(90deg,rgba(2,11,20,.96) 0%,rgba(2,11,20,.72) 43%,rgba(2,11,20,.30) 78%,rgba(2,11,20,.52) 100%),
+    linear-gradient(0deg,rgba(2,11,20,.78),rgba(2,11,20,.10) 58%,rgba(2,11,20,.35) 100%);
   z-index:0;
 }
 .hero.hero-image .hero-copy,
@@ -1236,16 +1232,14 @@ html[data-theme="light"] .theme-toggle:hover{
 
 @media(max-width:700px){
   .hero.hero-image{
-    width:100vw;
-    margin-left:calc(50% - 50vw);
     min-height:430px;
     margin-bottom:22px;
     padding:34px 24px 30px;
-    background-position:center top;
+    background-position:center center;
   }
   .hero.hero-image::before{
     background:
-      linear-gradient(180deg,rgba(2,11,20,.42) 0%,rgba(2,11,20,.52) 30%,rgba(2,11,20,.74) 62%,rgba(2,11,20,.96) 100%),
-      linear-gradient(90deg,rgba(2,11,20,.28),rgba(2,11,20,.18));
+      linear-gradient(180deg,rgba(2,11,20,.50) 0%,rgba(2,11,20,.62) 35%,rgba(2,11,20,.90) 100%),
+      linear-gradient(90deg,rgba(2,11,20,.35),rgba(2,11,20,.25));
   }
 }

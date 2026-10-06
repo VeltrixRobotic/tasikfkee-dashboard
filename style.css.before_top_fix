@@ -1215,7 +1215,7 @@ html[data-theme="light"] .theme-toggle:hover{
   align-items:flex-end;
   background-image:url('tasik-kemajuan-header.png');
   background-size:cover;
-  background-position:center top;
+  background-position:center 52%;
   box-shadow:none;
 }
 .hero.hero-image::before{
@@ -1241,7 +1241,7 @@ html[data-theme="light"] .theme-toggle:hover{
     min-height:430px;
     margin-bottom:22px;
     padding:34px 24px 30px;
-    background-position:center top;
+    background-position:center center;
   }
   .hero.hero-image::before{
     background:
