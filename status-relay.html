@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>Tasik Kemajuan Status Relay</title></head>
+<body>
+<script>
+(function(){
+  const API="https://api.veltrixrobotic.com";
+  const allowedParents=new Set(["https://uthmiot.my","https://www.uthmiot.my"]);
+  const params=new URLSearchParams(location.search);
+  const requested=params.get("parent")||"https://uthmiot.my";
+  const parentOrigin=allowedParents.has(requested)?requested:"https://uthmiot.my";
+
+  function send(status,received_at,last_seen,state){
+    window.parent.postMessage({
+      type:"tasik-kemajuan-status",
+      status:status||null,
+      received_at:received_at||null,
+      last_seen:last_seen||null,
+      state:state||"ok"
+    },parentOrigin);
+  }
+
+  async function sync(){
+    try{
+      const r=await fetch(API+"/api/tasikfkee/latest",{cache:"no-store"});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      const x=await r.json();
+      send(x.status,x.received_at,x.last_seen,"ok");
+    }catch(e){
+      console.error("Tasik status relay:",e);
+      send(null,null,null,"unavailable");
+    }
+  }
+
+  sync();
+  setInterval(sync,5000);
+})();
+</script>
+</body>
+</html>
