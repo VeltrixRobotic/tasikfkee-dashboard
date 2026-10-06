@@ -1605,3 +1605,8 @@ html[data-theme="light"] .hero.hero-image .live-meta{
   .main-site-arrow{font-size:19px}
   .header-actions{gap:7px}
 }
+
+/* UTHM IoT navigation occupies the original dashboard brand position. */
+.topbar > .main-site-button{
+  flex:0 0 auto;
+}
