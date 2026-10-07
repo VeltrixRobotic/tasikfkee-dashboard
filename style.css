@@ -69,9 +69,11 @@ body:before{
 }
 .status-dot{width:8px;height:8px;border-radius:50%;background:#8794a3;box-shadow:0 0 0 4px rgba(135,148,163,.07)}
 .top-status.online .status-dot{background:var(--green);box-shadow:0 0 14px rgba(57,230,164,.7)}
+.top-status.maintenance .status-dot{background:#f5b642;box-shadow:0 0 14px rgba(245,182,66,.65)}
 .status-label{display:block;color:var(--muted-2);font-size:8px;letter-spacing:1.3px;font-weight:800}
 .top-status b{display:block;font-size:11px;letter-spacing:1px;color:#c7d5e3;margin-top:1px}
 .top-status.online b{color:var(--green)}
+.top-status.maintenance b{color:#f5b642}
 main{width:min(1380px,90%);margin:auto;padding:42px 0 30px}
 .hero{
   display:flex;justify-content:space-between;align-items:flex-end;

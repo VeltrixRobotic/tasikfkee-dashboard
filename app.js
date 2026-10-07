@@ -23,10 +23,22 @@ async function get(url){
 }
 
 function setStatus(s){
-  const on=String(s).toUpperCase()==="ONLINE";
+  const state=String(s||"OFFLINE").trim().toUpperCase();
   const box=$("statusText").closest(".top-status");
-  box.className="top-status "+(on?"online":"offline");
-  $("statusText").textContent=on?"ONLINE":"OFFLINE";
+
+  let cls="offline";
+  let label="OFFLINE";
+
+  if(state==="ONLINE"){
+    cls="online";
+    label="ONLINE";
+  }else if(state==="MAINTENANCE"){
+    cls="maintenance";
+    label="MAINTENANCE";
+  }
+
+  box.className="top-status "+cls;
+  $("statusText").textContent=label;
 }
 
 async function latest(){
