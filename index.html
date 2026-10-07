@@ -74,7 +74,7 @@
           <span>ENVIRONMENT</span>
         </div>
         <div class="metric-value"><strong id="temperature">--</strong><small>°C</small></div>
-        <div class="metric-caption">Air temperature</div>
+        <div class="metric-caption">Air Temperature</div>
       </article>
 
       <article class="metric-card humidity">
@@ -85,7 +85,7 @@
           <span>ENVIRONMENT</span>
         </div>
         <div class="metric-value"><strong id="humidity">--</strong><small>%</small></div>
-        <div class="metric-caption">Relative humidity</div>
+        <div class="metric-caption">Relative Humidity</div>
       </article>
 
       <article class="metric-card pressure">
@@ -96,7 +96,7 @@
           <span>ATMOSPHERE</span>
         </div>
         <div class="metric-value"><strong id="pressure">--</strong><small>hPa</small></div>
-        <div class="metric-caption">Barometric pressure</div>
+        <div class="metric-caption">Barometric Pressure</div>
       </article>
 
       <article class="metric-card water">
@@ -108,7 +108,7 @@
           <span class="water-status neutral" id="waterStatus">--</span>
         </div>
         <div class="metric-value"><strong id="water">--</strong><small>cm</small></div>
-        <div class="metric-caption">Measured water level</div>
+        <div class="metric-caption">Measured Water Depth</div>
       </article>
 
       <article class="metric-card solar">
@@ -119,7 +119,7 @@
           <span>CHARGING</span>
         </div>
         <div class="metric-value"><strong id="voltage">--</strong><small>V</small></div>
-        <div class="metric-caption">Charging voltage</div>
+        <div class="metric-caption">Charging Voltage</div>
       </article>
 
       <article class="metric-card solar">
@@ -130,7 +130,7 @@
           <span>CHARGING</span>
         </div>
         <div class="metric-value"><strong id="current">--</strong><small>mA</small></div>
-        <div class="metric-caption">Charging current</div>
+        <div class="metric-caption">Charging Current</div>
       </article>
 
       <article class="metric-card solar">
@@ -141,7 +141,7 @@
           <span>CHARGING</span>
         </div>
         <div class="metric-value"><strong id="power">--</strong><small>mW</small></div>
-        <div class="metric-caption">Charging power</div>
+        <div class="metric-caption">Charging Power</div>
       </article>
 
       <article class="metric-card water">
@@ -152,7 +152,7 @@
           <span>WATER SENSOR</span>
         </div>
         <div class="metric-value"><strong id="pulse">--</strong><small>µs</small></div>
-        <div class="metric-caption">Pulse duration</div>
+        <div class="metric-caption">Pulse Duration</div>
       </article>
     </section>
 
@@ -163,6 +163,7 @@
       </div>
       <select id="range" aria-label="History range">
         <option value="1" selected>1 hour</option>
+        <option value="3">3 hours</option>
         <option value="6">6 hours</option>
         <option value="12">12 hours</option>
         <option value="24">24 hours</option>
@@ -175,7 +176,7 @@
         <div>
           <div class="section-kicker">WATER</div>
           <h2>Water Level</h2>
-          <p>Water level distance measured by the ultrasonic sensor.</p>
+          <p>Measured water depth.</p>
         </div>
         <div class="chart-note"><span></span> Historical data</div>
       </div>
@@ -187,7 +188,7 @@
         <div>
           <div class="section-kicker">ENVIRONMENT</div>
           <h2>Environmental history</h2>
-          <p>Temperature, humidity and atmospheric pressure readings over time.</p><div class="panel-status historical-data"><span class="status-dot"></span>Historical data</div><p></p>
+          <p>Temperature, humidity and atmospheric pressure.</p><div class="panel-status historical-data"><span class="status-dot"></span>Historical data</div><p></p>
         </div>
       </div>
       <div class="chart-wrap large"><canvas id="env"></canvas></div>
@@ -198,7 +199,7 @@
         <div>
           <div class="section-kicker">ENERGY</div>
           <h2>Charging performance</h2>
-          <p>Real-time charging voltage, current, and power at the device solar port.</p>
+          <p>Real-time charging voltage, current, and power.</p>
         </div>
         <div class="chart-note"><span></span> Historical data</div>
       </div>
