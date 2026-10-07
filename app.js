@@ -41,6 +41,35 @@ function setStatus(s){
   $("statusText").textContent=label;
 }
 
+function setWaterLevelStatus(value){
+  const badge=$("waterStatus");
+  const card=$("water").closest(".metric-card");
+  const level=Number(value);
+
+  if(!Number.isFinite(level)){
+    badge.textContent="--";
+    badge.className="water-status neutral";
+    card.classList.remove("water-normal","water-warning","water-alert");
+    return;
+  }
+
+  let state="NORMAL";
+  let cls="water-normal";
+
+  if(level>100){
+    state="ALERT";
+    cls="water-alert";
+  }else if(level>=80){
+    state="WARNING";
+    cls="water-warning";
+  }
+
+  badge.textContent=state;
+  badge.className="water-status "+cls;
+  card.classList.remove("water-normal","water-warning","water-alert");
+  card.classList.add(cls);
+}
+
 async function latest(){
   try{
     const x=await get(API+"/api/tasikfkee/latest");
@@ -53,6 +82,7 @@ async function latest(){
     $("humidity").textContent=num(d.humidity);
     $("pressure").textContent=num(d.pressure);
     $("water").textContent=num(d.water_distance_cm,1);
+    setWaterLevelStatus(d.water_distance_cm);
     $("pulse").textContent=num(d.water_pulse_us,0);
     $("voltage").textContent=num(d.solar_voltage,3);
     $("current").textContent=num(d.solar_current_ma,1);
