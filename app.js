@@ -93,6 +93,42 @@ async function latest(){
   }
 }
 
+function dynamicAxisRange(values,padding,minLimit=null,maxLimit=null){
+  const valid=values
+    .map(Number)
+    .filter(Number.isFinite);
+
+  if(!valid.length){
+    return{
+      min:minLimit,
+      max:maxLimit
+    };
+  }
+
+  const dataMin=Math.min(...valid);
+  const dataMax=Math.max(...valid);
+  const span=dataMax-dataMin;
+
+  let pad=padding;
+
+  if(span>0){
+    pad=Math.max(padding,span*.10);
+  }
+
+  let min=dataMin-pad;
+  let max=dataMax+pad;
+
+  if(minLimit!==null)min=Math.max(minLimit,min);
+  if(maxLimit!==null)max=Math.min(maxLimit,max);
+
+  if(min===max){
+    min=dataMin-padding;
+    max=dataMax+padding;
+  }
+
+  return{min,max};
+}
+
 function chartOptions(){
   const light=document.documentElement.getAttribute("data-theme")==="light";
   return{
@@ -137,6 +173,94 @@ function chartOptions(){
   };
 }
 
+function environmentChartOptions(r){
+  const options=chartOptions();
+
+  const temperatureRange=dynamicAxisRange(
+    r.map(a=>a.temperature),
+    2
+  );
+
+  const humidityRange=dynamicAxisRange(
+    r.map(a=>a.humidity),
+    5,
+    0,
+    100
+  );
+
+  const pressureRange=dynamicAxisRange(
+    r.map(a=>a.pressure),
+    5
+  );
+
+  options.scales={
+    x:options.scales.x,
+    temperature:{
+      type:"linear",
+      position:"left",
+      min:temperatureRange.min,
+      max:temperatureRange.max,
+      title:{
+        display:true,
+        text:"Temperature °C",
+        color:document.documentElement.getAttribute("data-theme")==="light"?"#70818b":"#647e97",
+        font:{size:9,weight:"600"}
+      },
+      ticks:{
+        color:document.documentElement.getAttribute("data-theme")==="light"?"#70818b":"#647e97",
+        font:{size:9}
+      },
+      grid:{
+        color:document.documentElement.getAttribute("data-theme")==="light"?"rgba(35,55,70,.055)":"rgba(255,255,255,.045)"
+      },
+      border:{display:false}
+    },
+    humidity:{
+      type:"linear",
+      position:"right",
+      min:humidityRange.min,
+      max:humidityRange.max,
+      title:{
+        display:true,
+        text:"Humidity %",
+        color:document.documentElement.getAttribute("data-theme")==="light"?"#70818b":"#647e97",
+        font:{size:9,weight:"600"}
+      },
+      ticks:{
+        color:document.documentElement.getAttribute("data-theme")==="light"?"#70818b":"#647e97",
+        font:{size:9}
+      },
+      grid:{
+        drawOnChartArea:false
+      },
+      border:{display:false}
+    },
+    pressure:{
+      type:"linear",
+      position:"right",
+      min:pressureRange.min,
+      max:pressureRange.max,
+      offset:true,
+      title:{
+        display:true,
+        text:"Pressure hPa",
+        color:document.documentElement.getAttribute("data-theme")==="light"?"#70818b":"#647e97",
+        font:{size:9,weight:"600"}
+      },
+      ticks:{
+        color:document.documentElement.getAttribute("data-theme")==="light"?"#70818b":"#647e97",
+        font:{size:9}
+      },
+      grid:{
+        drawOnChartArea:false
+      },
+      border:{display:false}
+    }
+  };
+
+  return options;
+}
+
 async function history(){
   try{
     const h=Number($("range").value);
@@ -151,12 +275,36 @@ async function history(){
       data:{
         labels,
         datasets:[
-          {label:"Temperature °C",data:r.map(a=>a.temperature),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4},
-          {label:"Humidity %",data:r.map(a=>a.humidity),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4},
-          {label:"Pressure hPa",data:r.map(a=>a.pressure),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4}
+          {
+            label:"Temperature °C",
+            data:r.map(a=>a.temperature),
+            yAxisID:"temperature",
+            tension:.28,
+            borderWidth:2,
+            pointRadius:0,
+            pointHoverRadius:4
+          },
+          {
+            label:"Humidity %",
+            data:r.map(a=>a.humidity),
+            yAxisID:"humidity",
+            tension:.28,
+            borderWidth:2,
+            pointRadius:0,
+            pointHoverRadius:4
+          },
+          {
+            label:"Pressure hPa",
+            data:r.map(a=>a.pressure),
+            yAxisID:"pressure",
+            tension:.28,
+            borderWidth:2,
+            pointRadius:0,
+            pointHoverRadius:4
+          }
         ]
       },
-      options:chartOptions()
+      options:environmentChartOptions(r)
     });
 
     if(waterLevelChart)waterLevelChart.destroy();
@@ -209,11 +357,28 @@ setInterval(history,60000);
 
 /* Refresh existing charts when the theme changes. */
 window.updateChartTheme=function(){
-  [envChart,waterLevelChart,solarChart].forEach(function(chart){
+  [waterLevelChart,solarChart].forEach(function(chart){
     if(!chart) return;
     chart.options=chartOptions();
     chart.update("none");
   });
+
+  if(envChart){
+    const labels=envChart.data.labels||[];
+    const datasets=envChart.data.datasets||[];
+    const temperatureData=datasets[0]?.data||[];
+    const humidityData=datasets[1]?.data||[];
+    const pressureData=datasets[2]?.data||[];
+
+    const rows=labels.map((label,i)=>({
+      temperature:temperatureData[i],
+      humidity:humidityData[i],
+      pressure:pressureData[i]
+    }));
+
+    envChart.options=environmentChartOptions(rows);
+    envChart.update("none");
+  }
 };
 
 /* =========================================================
