@@ -32,6 +32,9 @@ function setStatus(s){
   if(state==="ONLINE"){
     cls="online";
     label="ONLINE";
+  }else if(state==="SLEEP" || state==="SLEEPING"){
+    cls="sleep";
+    label="SLEEP";
   }else if(state==="MAINTENANCE"){
     cls="maintenance";
     label="MAINTENANCE";
@@ -39,6 +42,30 @@ function setStatus(s){
 
   box.className="top-status "+cls;
   $("statusText").textContent=label;
+}
+
+/*
+ * Device status rules:
+ * - More than 10 minutes since the latest received data/status = OFFLINE.
+ * - If the server reports SLEEP/SLEEPING and the last update is fresh = SLEEP.
+ * - Otherwise use the server-reported status.
+ */
+function resolveDeviceStatus(serverStatus,lastSeen){
+  const state=String(serverStatus||"OFFLINE").trim().toUpperCase();
+  const timestamp=lastSeen ? new Date(lastSeen).getTime() : NaN;
+
+  // A valid last-seen timestamp is required to enforce the 10-minute timeout.
+  if(Number.isFinite(timestamp)){
+    const ageMs=Date.now()-timestamp;
+    if(ageMs>10*60*1000 || ageMs<0) return "OFFLINE";
+  }
+
+  if(state==="SLEEP" || state==="SLEEPING") return "SLEEP";
+  if(state==="ONLINE") return "ONLINE";
+  if(state==="MAINTENANCE") return "MAINTENANCE";
+
+  // Unknown status, or no usable last-seen timestamp.
+  return "OFFLINE";
 }
 
 function setWaterLevelStatus(value){
@@ -75,9 +102,10 @@ async function latest(){
     const x=await get(API+"/api/tasikfkee/latest");
     const d=x.data||{};
 
-    setStatus(x.status);
+    const lastSeen=x.received_at||x.last_seen;
+    setStatus(resolveDeviceStatus(x.status,lastSeen));
 
-    $("updated").textContent=time(x.received_at||x.last_seen);
+    $("updated").textContent=time(lastSeen);
     $("temperature").textContent=num(d.temperature);
     $("humidity").textContent=num(d.humidity);
     $("pressure").textContent=num(d.pressure);
