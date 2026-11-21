@@ -104,13 +104,14 @@ function setWaterLevelStatus(value){
 }
 
 
-// Keep the most recent valid sensor readings visible while the device sleeps.
-// The cache survives page reloads; history is used to seed it on first visit.
+// The server-side history API is the shared source of truth for all visitors.
+// localStorage is only a per-browser fallback; it is NOT shared between users.
 const SENSOR_FIELDS = [
   "temperature","humidity","pressure","water_distance_cm",
   "water_pulse_us","solar_voltage","solar_current_ma","solar_power_mw"
 ];
 let lastSensorData = {};
+let historySeeded = false;
 
 function hasSensorReading(data){
   return SENSOR_FIELDS.some(key =>
@@ -140,11 +141,34 @@ function loadCachedSensorReadings(){
   }catch(e){}
 }
 
-async function seedSensorReadingsFromHistory(){
-  if(hasSensorReading(lastSensorData)) return;
+function historyTimestamp(row){
+  const raw=row?.time ?? row?.timestamp ?? row?.received_at ??
+    row?.created_at ?? row?.datetime ?? row?.date;
+  if(raw===undefined || raw===null || raw==="") return NaN;
+  if(typeof raw==="number" || /^\d+(\.\d+)?$/.test(String(raw))){
+    const n=Number(raw);
+    return n < 1e12 ? n*1000 : n;
+  }
+  return new Date(raw).getTime();
+}
+
+function normalizeHistoryRows(payload){
+  const rows=Array.isArray(payload) ? payload :
+    Array.isArray(payload?.data) ? payload.data : [];
+  return rows
+    .map(row=>({...row,_time:historyTimestamp(row)}))
+    .filter(row=>Number.isFinite(row._time))
+    .sort((a,b)=>a._time-b._time);
+}
+
+async function seedSensorReadingsFromHistory(force=false){
+  if(historySeeded && !force) return;
+  historySeeded=true;
   try{
     const x=await get(`${API}/api/tasikfkee/history?hours=24`);
-    const rows=Array.isArray(x.data)?x.data:[];
+    const rows=normalizeHistoryRows(x);
+    // Walk backwards to find the newest record containing at least one valid
+    // sensor reading. This comes from the server, so every visitor can restore it.
     for(let i=rows.length-1;i>=0;i--){
       if(hasSensorReading(rows[i])){
         mergeSensorReadings(rows[i]);
@@ -152,11 +176,10 @@ async function seedSensorReadingsFromHistory(){
       }
     }
   }catch(e){
-    console.warn("Could not restore last sensor readings from history:",e);
+    console.warn("Could not restore shared last sensor readings from history API:",e);
+    // Per-browser cache remains a fallback only if the server history is unavailable.
   }
 }
-
-loadCachedSensorReadings();
 
 async function latest(){
   try{
@@ -167,7 +190,7 @@ async function latest(){
     // In that case, retain the last sensor readings instead of replacing them
     // with "--". Restore from history if this is a fresh browser session.
     mergeSensorReadings(d);
-    if(!hasSensorReading(lastSensorData)){
+    if(!historySeeded){
       await seedSensorReadingsFromHistory();
     }
     const readings=lastSensorData;
@@ -366,8 +389,8 @@ async function history(){
   try{
     const h=Number($("range").value);
     const x=await get(`${API}/api/tasikfkee/history?hours=${h}`);
-    const r=x.data||[];
-    const labels=r.map(a=>new Date(a.time).toLocaleTimeString("en-MY",{hour:"2-digit",minute:"2-digit"}));
+    const r=normalizeHistoryRows(x);
+    const labels=r.map(a=>new Date(a._time).toLocaleTimeString("en-MY",{hour:"2-digit",minute:"2-digit"}));
 
     if(envChart)envChart.destroy();
 
@@ -381,6 +404,7 @@ async function history(){
             data:r.map(a=>a.temperature),
             yAxisID:"temperature",
             tension:.28,
+            spanGaps:true,
             borderWidth:2,
             pointRadius:0,
             pointHoverRadius:4
@@ -390,6 +414,7 @@ async function history(){
             data:r.map(a=>a.humidity),
             yAxisID:"humidity",
             tension:.28,
+            spanGaps:true,
             borderWidth:2,
             pointRadius:0,
             pointHoverRadius:4
@@ -399,6 +424,7 @@ async function history(){
             data:r.map(a=>a.pressure),
             yAxisID:"pressure",
             tension:.28,
+            spanGaps:true,
             borderWidth:2,
             pointRadius:0,
             pointHoverRadius:4
@@ -419,6 +445,7 @@ async function history(){
             label:"Water level cm",
             data:r.map(a=>a.water_distance_cm),
             tension:.22,
+            spanGaps:true,
             borderWidth:2,
             pointRadius:0,
             pointHoverRadius:4
@@ -435,9 +462,9 @@ async function history(){
       data:{
         labels,
         datasets:[
-          {label:"Voltage V",data:r.map(a=>a.solar_voltage),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4},
-          {label:"Current mA",data:r.map(a=>a.solar_current_ma),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4},
-          {label:"Power mW",data:r.map(a=>a.solar_power_mw),tension:.28,borderWidth:2,pointRadius:0,pointHoverRadius:4}
+          {label:"Voltage V",data:r.map(a=>a.solar_voltage),tension:.28,spanGaps:true,borderWidth:2,pointRadius:0,pointHoverRadius:4},
+          {label:"Current mA",data:r.map(a=>a.solar_current_ma),tension:.28,spanGaps:true,borderWidth:2,pointRadius:0,pointHoverRadius:4},
+          {label:"Power mW",data:r.map(a=>a.solar_power_mw),tension:.28,spanGaps:true,borderWidth:2,pointRadius:0,pointHoverRadius:4}
         ]
       },
       options:chartOptions()
