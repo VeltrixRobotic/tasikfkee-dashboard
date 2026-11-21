@@ -103,28 +103,91 @@ function setWaterLevelStatus(value){
   card.classList.add(cls);
 }
 
+
+// Keep the most recent valid sensor readings visible while the device sleeps.
+// The cache survives page reloads; history is used to seed it on first visit.
+const SENSOR_FIELDS = [
+  "temperature","humidity","pressure","water_distance_cm",
+  "water_pulse_us","solar_voltage","solar_current_ma","solar_power_mw"
+];
+let lastSensorData = {};
+
+function hasSensorReading(data){
+  return SENSOR_FIELDS.some(key =>
+    data && data[key] !== null && data[key] !== undefined &&
+    data[key] !== "" && Number.isFinite(Number(data[key]))
+  );
+}
+
+function mergeSensorReadings(data){
+  if(!data || typeof data !== "object") return;
+  for(const key of SENSOR_FIELDS){
+    const value=data[key];
+    if(value !== null && value !== undefined && value !== "" &&
+       Number.isFinite(Number(value))){
+      lastSensorData[key]=Number(value);
+    }
+  }
+  if(hasSensorReading(lastSensorData)){
+    try{ localStorage.setItem("tasikfkee-last-sensor-data",JSON.stringify(lastSensorData)); }catch(e){}
+  }
+}
+
+function loadCachedSensorReadings(){
+  try{
+    const saved=JSON.parse(localStorage.getItem("tasikfkee-last-sensor-data")||"{}");
+    if(saved && typeof saved==="object") mergeSensorReadings(saved);
+  }catch(e){}
+}
+
+async function seedSensorReadingsFromHistory(){
+  if(hasSensorReading(lastSensorData)) return;
+  try{
+    const x=await get(`${API}/api/tasikfkee/history?hours=24`);
+    const rows=Array.isArray(x.data)?x.data:[];
+    for(let i=rows.length-1;i>=0;i--){
+      if(hasSensorReading(rows[i])){
+        mergeSensorReadings(rows[i]);
+        break;
+      }
+    }
+  }catch(e){
+    console.warn("Could not restore last sensor readings from history:",e);
+  }
+}
+
+loadCachedSensorReadings();
+
 async function latest(){
   try{
     const x=await get(API+"/api/tasikfkee/latest");
     const d=x.data||{};
 
-    // The latest endpoint carries the device-published status inside data.status.
-    // Its top-level status may be the server's automatic availability status,
-    // so prefer data.status when resolving ONLINE/SLEEP.
+    // The latest endpoint may contain only data.status during deep sleep.
+    // In that case, retain the last sensor readings instead of replacing them
+    // with "--". Restore from history if this is a fresh browser session.
+    mergeSensorReadings(d);
+    if(!hasSensorReading(lastSensorData)){
+      await seedSensorReadingsFromHistory();
+    }
+    const readings=lastSensorData;
+
+    // The device-published status is inside data.status. The top-level status
+    // may be the server's automatic availability status.
     const lastSeen=x.last_seen||x.received_at||x.data?.received_at||x.data?.timestamp;
     const reportedStatus=x.data?.status||x.status;
     setStatus(resolveDeviceStatus(reportedStatus,lastSeen,x.age_seconds));
 
     $("updated").textContent=time(lastSeen);
-    $("temperature").textContent=num(d.temperature);
-    $("humidity").textContent=num(d.humidity);
-    $("pressure").textContent=num(d.pressure);
-    $("water").textContent=num(d.water_distance_cm,1);
-    setWaterLevelStatus(d.water_distance_cm);
-    $("pulse").textContent=num(d.water_pulse_us,0);
-    $("voltage").textContent=num(d.solar_voltage,3);
-    $("current").textContent=num(d.solar_current_ma,1);
-    $("power").textContent=num(d.solar_power_mw,1);
+    $("temperature").textContent=num(readings.temperature);
+    $("humidity").textContent=num(readings.humidity);
+    $("pressure").textContent=num(readings.pressure);
+    $("water").textContent=num(readings.water_distance_cm,1);
+    setWaterLevelStatus(readings.water_distance_cm);
+    $("pulse").textContent=num(readings.water_pulse_us,0);
+    $("voltage").textContent=num(readings.solar_voltage,3);
+    $("current").textContent=num(readings.solar_current_ma,1);
+    $("power").textContent=num(readings.solar_power_mw,1);
   }catch(e){
     console.error("Latest:",e);
     setStatus("OFFLINE");
