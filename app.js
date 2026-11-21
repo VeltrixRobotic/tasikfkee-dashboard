@@ -46,31 +46,32 @@ function setStatus(s){
 
 /*
  * Device status rules:
- * - More than 10 minutes since the latest received data/status = OFFLINE.
- * - If the server reports SLEEP/SLEEPING and the last update is fresh = SLEEP.
- * - Otherwise use the server-reported status.
+ * - Use the device-published data.status first. The API's top-level status
+ *   can be its automatic availability status and may say OFFLINE while the
+ *   device has just published SLEEP.
+ * - Keep ONLINE/SLEEP for up to 30 minutes after the latest received update.
+ * - After 30 minutes without a new update, show OFFLINE.
  */
 function resolveDeviceStatus(serverStatus,lastSeen,ageSeconds){
   const state=String(serverStatus||"").trim().toUpperCase();
   const timestamp=lastSeen ? new Date(lastSeen).getTime() : NaN;
   const reportedAge=Number(ageSeconds);
 
-  // Prefer the server's age_seconds when supplied; otherwise calculate from
-  // last_seen/received_at. More than 10 minutes without an update is OFFLINE.
-  let ageMs=Number.isFinite(reportedAge)&&reportedAge>=0
-    ?reportedAge*1000
-    :Number.isFinite(timestamp)
-      ?Date.now()-timestamp
+  // Prefer the timestamp of the latest received record/status packet. Use
+  // age_seconds only when the API does not provide a usable timestamp.
+  const ageMs=Number.isFinite(timestamp)
+    ?Date.now()-timestamp
+    :Number.isFinite(reportedAge)&&reportedAge>=0
+      ?reportedAge*1000
       :NaN;
 
-  if(!Number.isFinite(ageMs)||ageMs<0||ageMs>10*60*1000){
+  if(!Number.isFinite(ageMs)||ageMs<0||ageMs>30*60*1000){
     return "OFFLINE";
   }
 
   if(state==="SLEEP" || state==="SLEEPING") return "SLEEP";
   if(state==="ONLINE") return "ONLINE";
   if(state==="MAINTENANCE") return "MAINTENANCE";
-
   return "OFFLINE";
 }
 
@@ -186,22 +187,24 @@ async function latest(){
     const x=await get(API+"/api/tasikfkee/latest");
     const d=x.data||{};
 
-    // The latest endpoint may contain only data.status during deep sleep.
-    // In that case, retain the last sensor readings instead of replacing them
-    // with "--". Restore from history if this is a fresh browser session.
+    // Update the system badge immediately after the latest API response.
+    // Do this BEFORE the history request so a slow history response cannot
+    // leave the page showing the initial OFFLINE state for several seconds.
+    // received_at is preferred because it represents the latest record,
+    // including the SLEEP status packet; last_seen is the fallback.
+    const lastSeen=x.received_at||d.received_at||x.last_seen||d.timestamp;
+    const reportedStatus=d.status||x.status;
+    setStatus(resolveDeviceStatus(reportedStatus,lastSeen,x.age_seconds));
+    $("updated").textContent=time(lastSeen);
+
+    // During deep sleep, latest.data may contain status only. Keep the last
+    // valid readings and restore the shared latest reading from history if
+    // this is a fresh browser session.
     mergeSensorReadings(d);
     if(!historySeeded){
       await seedSensorReadingsFromHistory();
     }
     const readings=lastSensorData;
-
-    // The device-published status is inside data.status. The top-level status
-    // may be the server's automatic availability status.
-    const lastSeen=x.last_seen||x.received_at||x.data?.received_at||x.data?.timestamp;
-    const reportedStatus=x.data?.status||x.status;
-    setStatus(resolveDeviceStatus(reportedStatus,lastSeen,x.age_seconds));
-
-    $("updated").textContent=time(lastSeen);
     $("temperature").textContent=num(readings.temperature);
     $("humidity").textContent=num(readings.humidity);
     $("pressure").textContent=num(readings.pressure);
@@ -213,7 +216,11 @@ async function latest(){
     $("power").textContent=num(readings.solar_power_mw,1);
   }catch(e){
     console.error("Latest:",e);
-    setStatus("OFFLINE");
+    // Do not force OFFLINE on a transient request failure if the last
+    // confirmed status is still within the 30-minute freshness window.
+    const badge=$("statusText");
+    const current=String(badge?.textContent||"").trim().toUpperCase();
+    if(!["ONLINE","SLEEP","MAINTENANCE"].includes(current)) setStatus("OFFLINE");
   }
 }
 
