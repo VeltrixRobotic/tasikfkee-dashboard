@@ -50,21 +50,27 @@ function setStatus(s){
  * - If the server reports SLEEP/SLEEPING and the last update is fresh = SLEEP.
  * - Otherwise use the server-reported status.
  */
-function resolveDeviceStatus(serverStatus,lastSeen){
-  const state=String(serverStatus||"OFFLINE").trim().toUpperCase();
+function resolveDeviceStatus(serverStatus,lastSeen,ageSeconds){
+  const state=String(serverStatus||"").trim().toUpperCase();
   const timestamp=lastSeen ? new Date(lastSeen).getTime() : NaN;
+  const reportedAge=Number(ageSeconds);
 
-  // A valid last-seen timestamp is required to enforce the 10-minute timeout.
-  if(Number.isFinite(timestamp)){
-    const ageMs=Date.now()-timestamp;
-    if(ageMs>10*60*1000 || ageMs<0) return "OFFLINE";
+  // Prefer the server's age_seconds when supplied; otherwise calculate from
+  // last_seen/received_at. More than 10 minutes without an update is OFFLINE.
+  let ageMs=Number.isFinite(reportedAge)&&reportedAge>=0
+    ?reportedAge*1000
+    :Number.isFinite(timestamp)
+      ?Date.now()-timestamp
+      :NaN;
+
+  if(!Number.isFinite(ageMs)||ageMs<0||ageMs>10*60*1000){
+    return "OFFLINE";
   }
 
   if(state==="SLEEP" || state==="SLEEPING") return "SLEEP";
   if(state==="ONLINE") return "ONLINE";
   if(state==="MAINTENANCE") return "MAINTENANCE";
 
-  // Unknown status, or no usable last-seen timestamp.
   return "OFFLINE";
 }
 
@@ -102,8 +108,12 @@ async function latest(){
     const x=await get(API+"/api/tasikfkee/latest");
     const d=x.data||{};
 
-    const lastSeen=x.received_at||x.last_seen;
-    setStatus(resolveDeviceStatus(x.status,lastSeen));
+    // The latest endpoint carries the device-published status inside data.status.
+    // Its top-level status may be the server's automatic availability status,
+    // so prefer data.status when resolving ONLINE/SLEEP.
+    const lastSeen=x.last_seen||x.received_at||x.data?.received_at||x.data?.timestamp;
+    const reportedStatus=x.data?.status||x.status;
+    setStatus(resolveDeviceStatus(reportedStatus,lastSeen,x.age_seconds));
 
     $("updated").textContent=time(lastSeen);
     $("temperature").textContent=num(d.temperature);
